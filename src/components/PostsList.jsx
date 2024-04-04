@@ -5,28 +5,27 @@ import {useState} from "react";
 import Modal from "./Modal";
 
 function PostsList({isPosting, onClosePosting}) {
-  const [ body, setBody ] = useState('');
-  const [ name, setName ] = useState('');
-  function changeBodyHandler(event) {
-    setBody(event.target.value)
-  }
-
-  function changeNameHandler(event) {
-    setName(event.target.value)
+  const [posts, setPosts] = useState([]);
+  function addPostHandler(postData) {
+    setPosts((posts)=> [postData, ...posts]);
   }
 
   return(
     <ul className={classes.posts}>
       {isPosting &&
       <Modal onClose={onClosePosting}>
-        <NewPost onBodyChange={changeBodyHandler} onNameChange={changeNameHandler}/>
+        <NewPost onCancel={onClosePosting} onAddPost={addPostHandler}/>
       </Modal>}
+      {posts.length >0 && posts.map((post)=>
       <li>
-        <Post author={name} body={body}/>
+        <Post key={post.body} author={post.author} body={post.body}/>
       </li>
-      <li>
-        <Post author="zac" body="awesome"/>
-      </li>
+      )}
+      {posts.length === 0 && (
+        <div style={{textAlign: 'center', gridColumn: 2}}>
+        <h2>there are no posts yet</h2>
+        </div>
+      )}
     </ul>
   );
 }
